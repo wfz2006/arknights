@@ -1,0 +1,2234 @@
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>明日方舟 (Arknights) — 瘦金体战术与欧洲手稿典藏册</title>
+  
+  <!-- Google Fonts: 欧洲手写诗艺术花体 + 东方手书体 + 典雅衬线/无衬线字族 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Charm:wght@400;700&family=Cinzel+Decorative:wght@400;700;900&family=Great+Vibes&family=JetBrains+Mono:wght@400;500;700&family=Long+Cang&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;600;700&family=Parisienne&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+
+  <style>
+    /* -----------------------------------------------------------
+       1. 本地瘦金体 Font-Face 定义
+       ----------------------------------------------------------- */
+    @font-face {
+      font-family: 'Shoujinti';
+      src: url('assets/shoujinti.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* 瘦金体专属类：应用于指定区域 */
+    .shoujin-font {
+      font-family: 'Shoujinti', 'Ma Shan Zheng', 'STKaiti', 'KaiTi', 'FZShuTi', serif !important;
+      letter-spacing: 0.04em;
+    }
+
+    /* -----------------------------------------------------------
+       Atelier Zero — 明日方舟欧洲手稿诗篇与战术庭院 Token
+       ----------------------------------------------------------- */
+    :root {
+      --bg: #f7f4ed;            /* 暖石羊皮纸底色 */
+      --surface: #ffffff;       /* 羊皮纸白 */
+      --surface-dark: #141312;  /* 沉浸墨黑 */
+      --fg: #1c1a17;            /* 墨致沉炭 */
+      --fg-muted: #6e695e;      /* 灰褐复古字 */
+      --border: #e2dbca;        /* 羊皮纸虚线 */
+      --accent: #d93829;        /* 罗德岛战术红 */
+      --gold: #cfa052;          /* 欧洲手稿金箔 */
+      --gold-dark: #8c6426;
+      --gold-light: #f4e8cf;
+      
+      /* 欧洲手写诗与手抄花体字体体系 */
+      --font-poem: 'Pinyon Script', 'Great Vibes', 'Parisienne', cursive;
+      --font-poem-alt: 'Great Vibes', 'Alex Brush', cursive;
+      --font-cn-script: 'Ma Shan Zheng', 'Zhi Mang Xing', cursive, serif;
+      --font-display: 'Cinzel Decorative', 'Playfair Display', 'Noto Serif SC', serif;
+      --font-serif: 'Playfair Display', 'Noto Serif SC', Georgia, serif;
+      --font-body: 'Noto Serif SC', -apple-system, BlinkMacSystemFont, serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* 源石背景微粒 Canvas */
+    #particleCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* 羊皮纸点状纹理叠加 */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(#d5cebe 0.75px, transparent 0.75px);
+      background-size: 24px 24px;
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* 全局虚线分隔符 */
+    .dotted-rule {
+      border: 0;
+      border-bottom: 1px dotted var(--border);
+      margin: 3.5rem 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .dot-accent { color: var(--accent); font-weight: bold; margin-left: 2px; }
+    .dot-gold { color: var(--gold); font-weight: bold; margin-left: 2px; }
+
+    /* 欧洲手写诗艺术字通用样式 */
+    .poem-script {
+      font-family: var(--font-poem);
+      font-size: 2.4rem;
+      line-height: 1.15;
+      color: var(--gold-dark);
+      letter-spacing: 0.5px;
+    }
+    .poem-script-large {
+      font-family: var(--font-poem);
+      font-size: 3.8rem;
+      line-height: 1.05;
+      color: var(--gold-dark);
+    }
+    .serif-italic {
+      font-family: var(--font-serif);
+      font-style: italic;
+    }
+
+    /* 红色强调字体（参考 landing.html） */
+    .editorial-em {
+      color: var(--accent);
+      padding: 0 0.15em;
+    }
+    .poem-text {
+      font-family: var(--font-poem);
+      font-size: 2.2rem;
+      line-height: 1.25;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      text-shadow: 0 2px 10px rgba(217, 56, 41, 0.08);
+    }
+
+    /* 欧洲手稿首字花体 (Illuminated Drop Cap) */
+    .illuminated-cap {
+      float: left;
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 3.2rem;
+      line-height: 0.8;
+      padding: 0.2rem 0.5rem 0.2rem 0.2rem;
+      margin-right: 0.5rem;
+      color: var(--gold-dark);
+      background: linear-gradient(135deg, #fceecb 0%, #e6cb96 100%);
+      border: 1px solid var(--gold);
+      box-shadow: 2px 2px 0px rgba(140, 100, 38, 0.2);
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ===========================================================
+       1. Topbar & Header Nav — 欧洲古典书卷与大修道院典藏风格
+       =========================================================== */
+    .topbar {
+      background: #191715;
+      color: var(--gold-light);
+      font-family: var(--font-serif-italic);
+      font-style: italic;
+      font-size: 0.8rem;
+      padding: 0.4rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      letter-spacing: 0.12em;
+      position: relative;
+      z-index: 101;
+      border-bottom: 1px solid rgba(197, 160, 89, 0.25);
+    }
+    .topbar-badge {
+      background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 100%);
+      color: #171513;
+      font-family: 'Cinzel Decorative', serif;
+      font-style: normal;
+      padding: 1px 7px;
+      border-radius: 2px;
+      font-weight: 700;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+    }
+
+    header.nav-header {
+      position: sticky;
+      top: 0;
+      background: rgba(247, 244, 237, 0.96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(197, 160, 89, 0.15);
+      box-shadow: 0 4px 20px rgba(140, 100, 38, 0.04);
+      z-index: 100;
+      transition: transform 0.3s ease;
+    }
+    .nav-container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0.7rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+      color: var(--fg);
+    }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      background: radial-gradient(circle, #fcfbfa 0%, #eee8db 100%);
+      color: var(--gold-dark);
+      display: grid;
+      place-items: center;
+      font-family: 'Cinzel Decorative', serif;
+      font-weight: bold;
+      font-size: 1.25rem;
+      border: 1px solid rgba(197, 160, 89, 0.45);
+      box-shadow: 0 2px 6px rgba(140, 100, 38, 0.08);
+      transition: all 0.25s ease;
+    }
+    .brand-logo:hover .brand-mark {
+      border-color: var(--gold);
+      transform: rotate(45deg);
+    }
+    .brand-text h1 {
+      font-family: 'Cinzel Decorative', 'Playfair Display', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      line-height: 1.1;
+      color: var(--fg);
+    }
+    .brand-text p {
+      font-family: var(--font-serif-italic);
+      font-style: italic;
+      font-size: 0.76rem;
+      color: var(--gold-dark);
+      letter-spacing: 0.15em;
+    }
+    .brand-text {
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-item {
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.2rem 0.4rem;
+      position: relative;
+      transition: all 0.25s ease;
+    }
+    .nav-item::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+    .nav-item:hover::after {
+      width: 75%;
+    }
+    .nav-top {
+      display: flex;
+      align-items: baseline;
+      gap: 0.35rem;
+      line-height: 1;
+      margin-bottom: 0.22rem;
+    }
+    .nav-num {
+      font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--gold-dark);
+      letter-spacing: 0.12em;
+    }
+    .nav-en {
+      font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 0.82rem;
+      color: var(--fg-muted);
+      letter-spacing: 0.1em;
+    }
+    .nav-cn {
+      font-family: 'Noto Serif SC', serif;
+      font-weight: 300;
+      font-size: 0.92rem;
+      color: var(--fg);
+      letter-spacing: 0.12em;
+      line-height: 1.2;
+      transition: color 0.2s;
+    }
+    .nav-item:hover .nav-num {
+      color: var(--accent);
+    }
+    .nav-item:hover .nav-en {
+      color: var(--gold-dark);
+    }
+    .nav-item:hover .nav-cn {
+      color: var(--fg);
+      font-weight: 400;
+    }
+
+    .nav-action {
+      background: transparent;
+      color: var(--fg);
+      text-decoration: none;
+      padding: 0.55rem 1.45rem;
+      font-family: 'Cormorant Garamond', 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: 1px solid rgba(197, 160, 89, 0.4);
+      box-shadow: 0 2px 8px rgba(197, 160, 89, 0.06);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .nav-action::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(207, 160, 82, 0.12) 0%, rgba(140, 100, 38, 0.04) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .nav-action:hover {
+      border-color: var(--gold);
+      color: var(--gold-dark);
+      box-shadow: 0 4px 16px rgba(197, 160, 89, 0.18);
+      transform: translateY(-1px);
+    }
+    .nav-action:hover::before {
+      opacity: 1;
+    }
+
+    /* ===========================================================
+       2. Hero Section — 序曲手稿与欧洲手写诗
+       =========================================================== */
+    .hero {
+      padding: 4.5rem 0 3.5rem;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+    .hero-poem-banner {
+      display: inline-block;
+      margin-bottom: 0.75rem;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: 3.4rem;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+      font-weight: 700;
+    }
+    .hero-title-script {
+      font-family: var(--font-poem);
+      font-size: 3.2rem;
+      color: var(--gold-dark);
+      font-weight: normal;
+      display: block;
+      margin-top: 0.2rem;
+    }
+    .hero-lead {
+      font-size: 1.05rem;
+      color: var(--fg-muted);
+      margin-bottom: 2.2rem;
+      max-width: 600px;
+      line-height: 1.75;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+      margin-bottom: 2.5rem;
+    }
+    .btn-primary {
+      background: var(--fg);
+      color: var(--bg);
+      text-decoration: none;
+      padding: 0.85rem 2rem;
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      border: 1px solid var(--gold);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: all 0.25s;
+    }
+    .btn-primary:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--fg);
+      text-decoration: none;
+      padding: 0.85rem 1.8rem;
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      border: 1px solid var(--border);
+      transition: all 0.25s;
+    }
+    .btn-secondary:hover {
+      border-color: var(--gold);
+      color: var(--gold-dark);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      border-top: 1px dotted var(--border);
+      padding-top: 1.5rem;
+    }
+    .stat-num {
+      font-family: var(--font-poem);
+      font-size: 3rem;
+      color: var(--gold-dark);
+      line-height: 1;
+    }
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--fg-muted);
+      letter-spacing: 0.15em;
+      margin-top: 0.3rem;
+    }
+
+    /* Hero Visual 3D Card */
+    .hero-visual {
+      perspective: 1000px;
+    }
+    .hero-card {
+      background: var(--surface);
+      border: 1px solid var(--gold);
+      box-shadow: 0 20px 50px rgba(140, 100, 38, 0.12);
+      padding: 1.25rem;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.2s ease-out;
+    }
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--gold-dark);
+      border-bottom: 1px dotted var(--border);
+      padding-bottom: 0.6rem;
+      margin-bottom: 1rem;
+      letter-spacing: 0.08em;
+    }
+    .operator-showcase-box {
+      position: relative;
+      background: linear-gradient(180deg, #fcfbfa 0%, #efebe2 100%);
+      border: 1px solid var(--border);
+      height: 480px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.5rem;
+    }
+    .operator-showcase-img {
+      position: absolute;
+      top: -10px;
+      right: -20px;
+      height: 110%;
+      object-fit: contain;
+      z-index: 1;
+      filter: drop-shadow(0 15px 25px rgba(0,0,0,0.18));
+      transition: transform 0.5s ease;
+    }
+    .hero-card:hover .operator-showcase-img {
+      transform: scale(1.04) translateY(-8px);
+    }
+    .operator-overlay-tag {
+      position: absolute;
+      top: 1.25rem;
+      left: 1.25rem;
+      background: var(--fg);
+      color: var(--gold);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 3px 8px;
+      letter-spacing: 0.15em;
+      z-index: 2;
+    }
+    .operator-overlay-poem {
+      position: relative;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      padding: 1.2rem;
+      border: 1px solid var(--gold);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    }
+
+    .op-fallback {
+      display: none;
+      height: 100%;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: var(--fg-muted);
+      font-family: var(--font-display);
+      text-align: center;
+    }
+
+    /* -----------------------------------------------------------
+       02. Worldview Section — 图片指定修改位置（瘦金体加持）
+       ----------------------------------------------------------- */
+    .section-head {
+      margin-bottom: 3rem;
+    }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .epochs-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+    .epoch-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      position: relative;
+      transition: all 0.5s ease;
+      overflow: hidden;
+    }
+    .epoch-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1e1c1a;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 0;
+    }
+    .epoch-card:hover::before {
+      opacity: 1;
+    }
+    .epoch-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(140, 100, 38, 0.1);
+    }
+    .epoch-num,
+    .epoch-card .epoch-title,
+    .epoch-card .epoch-desc,
+    .epoch-poem {
+      position: relative;
+      z-index: 1;
+      transition: color 0.5s ease, border-color 0.5s ease;
+    }
+    .epoch-num {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      color: rgba(207, 160, 82, 0.35);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .epoch-card:hover .epoch-num {
+      color: var(--gold);
+      text-shadow: 0 0 20px rgba(207, 160, 82, 0.4);
+    }
+    .epoch-card .epoch-title {
+      font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', STSong, serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.75rem;
+      color: #2A2421;
+      -webkit-font-smoothing: antialiased;
+    }
+    .epoch-card:hover .epoch-title {
+      color: #fff;
+    }
+    .epoch-card .epoch-desc {
+      font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', STSong, serif;
+      font-size: 0.95rem;
+      font-weight: 400;
+      letter-spacing: 0.03em;
+      color: #3D352E;
+      line-height: 1.75;
+      margin-bottom: 1.25rem;
+      -webkit-font-smoothing: antialiased;
+    }
+    .epoch-card:hover .epoch-desc {
+      color: #b5af9f;
+    }
+    .epoch-poem {
+      font-family: var(--font-poem);
+      font-size: 1.7rem;
+      color: var(--gold-dark);
+      border-top: 1px dotted var(--border);
+      padding-top: 0.6rem;
+    }
+    .epoch-card:hover .epoch-poem {
+      color: var(--gold);
+      border-top-color: rgba(207, 160, 82, 0.4);
+      text-shadow: 0 0 16px rgba(207, 160, 82, 0.3);
+    }
+
+    /* 12版世界观区块标题 */
+    #worldview .section-header {
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto 3.5rem;
+    }
+    #worldview .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--gold-dark);
+      letter-spacing: 0.25em;
+      margin-bottom: 0.4rem;
+    }
+    #worldview .section-title {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      letter-spacing: 0.02em;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+    #worldview .section-subtitle-poem {
+      font-family: var(--font-poem);
+      font-size: 2.4rem;
+      color: var(--gold-dark);
+      line-height: 1.1;
+    }
+
+    /* 泰拉沉思录手稿引用（图二） */
+    .manuscript-quote {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 4rem 3rem;
+      text-align: center;
+      margin: 4rem auto;
+      max-width: 1000px;
+      position: relative;
+      transition: border-color 0.5s ease;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .manuscript-quote::before {
+      content: '';
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 48px;
+      height: 48px;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      background: var(--bg);
+      z-index: 2;
+      transition: border-color 0.5s ease, background 0.5s ease;
+    }
+    .manuscript-quote::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      z-index: 2;
+      transition: background 0.5s ease, box-shadow 0.5s ease;
+    }
+    .manuscript-quote .bg-layer {
+      position: absolute;
+      inset: 0;
+      background: #1e1c1a;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      z-index: 0;
+    }
+    .manuscript-quote:hover .bg-layer {
+      opacity: 1;
+    }
+    .manuscript-quote:hover {
+      border-color: var(--gold);
+    }
+    .manuscript-quote:hover::before {
+      border-color: var(--gold);
+      background: #1e1c1a;
+    }
+    .manuscript-quote:hover::after {
+      background: var(--gold);
+      box-shadow: 0 0 16px rgba(207, 160, 82, 0.5);
+    }
+
+    .manuscript-quote-content {
+      position: relative;
+      z-index: 1;
+    }
+    .manuscript-quote-text {
+      font-family: var(--font-poem);
+      font-size: 2.4rem;
+      line-height: 1.55;
+      color: var(--fg);
+      margin-bottom: 1.5rem;
+      min-height: 180px;
+    }
+    .quote-line {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.5s ease, transform 0.5s ease, color 0.5s ease;
+    }
+    .manuscript-quote:hover .quote-line {
+      opacity: 0.25;
+      transform: translateY(8px);
+    }
+    .manuscript-quote:hover .quote-line:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
+    .manuscript-quote:hover .quote-line:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.3s; }
+    .manuscript-quote:hover .quote-line:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.5s; }
+    .manuscript-quote:hover .quote-line:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.7s; }
+
+    .manuscript-quote:hover .manuscript-quote-text {
+      color: var(--gold);
+    }
+    .manuscript-quote-text .red-em {
+      color: var(--accent);
+      transition: color 0.5s ease, text-shadow 0.5s ease;
+    }
+    .manuscript-quote:hover .manuscript-quote-text .red-em {
+      color: #ff2a2a;
+      text-shadow: 0 0 22px rgba(255, 42, 42, 0.55);
+    }
+
+    .manuscript-quote-source {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--fg-muted);
+      letter-spacing: 0.12em;
+      transition: color 0.5s ease;
+    }
+    .manuscript-quote:hover .manuscript-quote-source {
+      color: #b5af9f;
+    }
+
+    /* -----------------------------------------------------------
+       03. Operators Roster (干员档案库)
+       ----------------------------------------------------------- */
+    .roster-filter {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px dotted var(--border);
+      padding-bottom: 1rem;
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.5rem 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--fg-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--fg);
+      color: var(--bg);
+      border-color: var(--fg);
+    }
+    .filter-btn.active {
+      border-color: var(--gold);
+    }
+
+    .roster-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.75rem;
+    }
+    .op-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: all 0.3s;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .op-card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 16px 35px rgba(0,0,0,0.08);
+      transform: translateY(-5px);
+    }
+    .op-card-img-wrapper {
+      height: 310px;
+      position: relative;
+      background: linear-gradient(180deg, #faf7f2 0%, #eae4d5 100%);
+      overflow: hidden;
+    }
+    .op-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      transition: transform 0.4s ease;
+    }
+    .op-card:hover .op-card-img {
+      transform: scale(1.06);
+    }
+    .op-card-badge {
+      display: none !important;
+    }
+    .op-card-body {
+      padding: 1.25rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .op-card-body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #1e1c1a;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 0;
+    }
+    .op-card:hover .op-card-body::before {
+      opacity: 1;
+    }
+    .op-card-body > * {
+      position: relative;
+      z-index: 1;
+    }
+    .op-card-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--gold-dark);
+      margin-bottom: 0.4rem;
+      transition: color 0.4s ease;
+    }
+    .op-card:hover .op-card-meta {
+      color: #b5af9f;
+    }
+    .op-card-name {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      transition: color 0.4s ease, text-shadow 0.4s ease;
+    }
+    .op-card:hover .op-card-name {
+      color: var(--op-theme);
+      text-shadow: 0 0 20px var(--op-theme-glow);
+    }
+    .op-card-title {
+      font-family: 'Pinyon Script', 'Great Vibes', 'Alex Brush', cursive;
+      font-size: 1.8rem;
+      color: var(--gold-dark);
+      line-height: 1.1;
+      margin: 0.4rem 0 0.8rem;
+      transition: color 0.4s ease, text-shadow 0.4s ease;
+    }
+    .op-card:hover .op-card-title {
+      color: var(--op-theme);
+      text-shadow: 0 0 20px var(--op-theme-glow);
+    }
+    .op-card-oath {
+      margin-top: auto;
+      border-top: 1px dotted var(--border);
+      padding-top: 0.6rem;
+      font-family: 'Pinyon Script', 'Great Vibes', 'Alex Brush', cursive;
+      font-size: 1.5rem;
+      line-height: 1.2;
+      color: var(--gold-dark);
+      transition: border-color 0.4s ease;
+    }
+    .op-card:hover .op-card-oath {
+      color: var(--gold-dark);
+      border-top-color: rgba(207,160,82,0.35);
+    }
+
+    
+    /* -----------------------------------------------------------
+       04. Class Matrix (官方 8 大战术职业矩阵) — 官方色调与高定战术框
+       ----------------------------------------------------------- */
+    .class-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    .class-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.6rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .class-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--cls-color, var(--gold));
+      opacity: 0.75;
+      transition: opacity 0.3s, height 0.3s;
+    }
+
+    .class-card:hover {
+      background: #1a1816;
+      color: #f7f4ed;
+      border-color: var(--cls-color, var(--gold));
+      box-shadow: 0 12px 32px rgba(20, 19, 18, 0.25), 0 0 20px rgba(var(--cls-rgb), 0.15);
+      transform: translateY(-3px);
+    }
+    .class-card:hover::before {
+      opacity: 1;
+      height: 4px;
+    }
+
+    .class-card-header {
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+    }
+
+    .class-icon-box {
+      width: 58px;
+      height: 58px;
+      background: rgba(var(--cls-rgb, 207, 160, 82), 0.12);
+      border: 1.5px solid var(--cls-color, var(--gold));
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+      position: relative;
+      border-radius: 6px;
+      box-shadow: 0 4px 14px rgba(var(--cls-rgb, 207, 160, 82), 0.18);
+    }
+    .class-icon-box::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 10px;
+      height: 10px;
+      background: var(--cls-color, var(--gold));
+      clip-path: polygon(100% 0, 0 100%, 100% 100%);
+    }
+
+    .class-card:hover .class-icon-box {
+      background: rgba(var(--cls-rgb, 207, 160, 82), 0.25);
+      border-color: var(--cls-color, var(--gold));
+      transform: scale(1.08);
+      box-shadow: 0 6px 20px rgba(var(--cls-rgb, 207, 160, 82), 0.35);
+    }
+
+    .class-icon-box img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      opacity: 1 !important;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) !important;
+      transition: all 0.3s ease;
+    }
+    .class-card:hover .class-icon-box img {
+      opacity: 1 !important;
+      transform: scale(1.1);
+      filter: drop-shadow(0 4px 8px rgba(var(--cls-rgb, 207, 160, 82), 0.5)) !important;
+    }
+
+    .class-code-tag {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--cls-color, var(--gold));
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+      font-weight: 700;
+    }
+
+    .class-title-en {
+      font-family: var(--font-poem);
+      font-size: 2.1rem;
+      color: var(--gold-dark);
+      line-height: 0.95;
+      transition: color 0.25s;
+    }
+    .class-card:hover .class-title-en {
+      color: var(--cls-color, var(--gold));
+    }
+
+    .class-title-cn {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--fg);
+      margin-top: 0.15rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .class-card:hover .class-title-cn {
+      color: #ffffff;
+    }
+
+    .class-tactical-pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      padding: 1px 5px;
+      background: rgba(207, 160, 82, 0.12);
+      color: var(--gold-dark);
+      border: 1px solid rgba(207, 160, 82, 0.3);
+      border-radius: 2px;
+    }
+    .class-card:hover .class-tactical-pill {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .class-desc {
+      font-size: 0.82rem;
+      color: var(--fg-muted);
+      line-height: 1.55;
+      transition: color 0.25s;
+      border-top: 1px dotted var(--border);
+      padding-top: 0.75rem;
+      margin-top: 0.2rem;
+    }
+    .class-card:hover .class-desc {
+      color: #b8b2a5;
+      border-top-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* 官方 8 大职业色彩变量定义 */
+    .class-card[data-class="vanguard"] { --cls-color: #8cbe23; --cls-rgb: 140, 190, 35; }
+    .class-card[data-class="guard"]    { --cls-color: #0098dc; --cls-rgb: 0, 152, 220; }
+    .class-card[data-class="defender"] { --cls-color: #f5a623; --cls-rgb: 245, 166, 35; }
+    .class-card[data-class="sniper"]   { --cls-color: #f36c21; --cls-rgb: 243, 108, 33; }
+    .class-card[data-class="caster"]   { --cls-color: #9055a2; --cls-rgb: 144, 85, 162; }
+    .class-card[data-class="medic"]    { --cls-color: #00c07f; --cls-rgb: 0, 192, 127; }
+    .class-card[data-class="supporter"]{ --cls-color: #00b0ff; --cls-rgb: 0, 176, 255; }
+    .class-card[data-class="specialist"]{ --cls-color: #e53935; --cls-rgb: 229, 57, 53; }
+    /* ===========================================================
+       7. EPIC BATTLES DARK SLAB SECTION
+       =========================================================== */
+    .dark-slab {
+      background: var(--surface-dark);
+      color: #e8e3d5;
+      padding: 5rem 0;
+      margin: 4rem 0;
+      position: relative;
+      border-top: 2px solid var(--gold);
+      border-bottom: 2px solid var(--gold);
+    }
+    .battle-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+    .battle-card {
+      perspective: 1200px;
+      background: transparent;
+      border: none;
+      padding: 0;
+      position: relative;
+      cursor: pointer;
+    }
+    .battle-card-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      transform-style: preserve-3d;
+      transition: transform 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .battle-card:hover .battle-card-inner {
+      transform: rotateY(180deg) translateY(-5px);
+    }
+    .battle-card-front,
+    .battle-card-back {
+      grid-area: 1 / 1;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .battle-card-front {
+      background: #1e1c1a;
+      border: 1px solid #36322b;
+      padding: 2.2rem;
+      transition: border-color 0.3s ease;
+    }
+    .battle-card:hover .battle-card-front {
+      border-color: var(--gold);
+    }
+    .battle-card-back {
+      transform: rotateY(180deg);
+      background: #0f0e0c;
+      border: 1px solid #36322b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      min-height: 100%;
+    }
+    .battle-card-img {
+      max-width: 100%;
+      max-height: 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .battle-tag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      margin-bottom: 0.5rem;
+    }
+    .battle-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+    .battle-text {
+      font-size: 0.88rem;
+      color: #b5af9f;
+      line-height: 1.65;
+      margin-bottom: 1.25rem;
+    }
+    .battle-quote {
+      font-family: var(--font-poem);
+      font-size: 2.2rem;
+      color: var(--gold);
+      border-top: 1px dotted #403b33;
+      padding-top: 0.6rem;
+      line-height: 1.1;
+    }
+
+    /* 12版战役区块标题 */
+    #battles .section-header {
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto 3.5rem;
+    }
+    #battles .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--gold);
+      letter-spacing: 0.25em;
+      margin-bottom: 0.4rem;
+    }
+
+    /* 罗德岛共同誓言（图三） */
+    .collective-oath {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 4rem 3rem;
+      text-align: center;
+      margin: 4rem auto;
+      max-width: 1100px;
+    }
+    .collective-oath-text {
+      font-family: var(--font-poem);
+      font-size: 2.6rem;
+      line-height: 1.45;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      text-shadow: 0 2px 10px rgba(217, 56, 41, 0.08);
+    }
+    .oath-line {
+      display: block;
+      opacity: 0;
+      clip-path: inset(0 100% 0 0);
+      transform: translateX(-8px);
+    }
+    .collective-oath.is-visible .oath-line {
+      animation: handWrite 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    .collective-oath.is-visible .oath-line:nth-child(1) { animation-delay: 0.2s; }
+    .collective-oath.is-visible .oath-line:nth-child(2) { animation-delay: 0.9s; }
+    .collective-oath.is-visible .oath-line:nth-child(3) { animation-delay: 1.6s; }
+    .collective-oath.is-visible .oath-line:nth-child(4) { animation-delay: 2.3s; }
+
+    @keyframes handWrite {
+      from {
+        opacity: 0;
+        clip-path: inset(0 100% 0 0);
+        transform: translateX(-8px);
+      }
+      to {
+        opacity: 1;
+        clip-path: inset(0 0 0 0);
+        transform: translateX(0);
+      }
+    }
+    .collective-oath-title {
+      font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', STSong, serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--fg);
+    }
+    .collective-oath-meta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--fg-muted);
+      letter-spacing: 0.15em;
+    }
+
+    /* ===========================================================
+       8. CONNECT CTA & FOOTER
+       =========================================================== */
+    .cta-box {
+      background: var(--surface);
+      border: 1px solid var(--gold);
+      padding: 4rem 2rem;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 16px 40px rgba(140, 100, 38, 0.08);
+    }
+    .cta-title {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin-bottom: 0.75rem;
+    }
+    .cta-desc {
+      max-width: 640px;
+      margin: 0 auto 2rem;
+      color: var(--fg-muted);
+      font-size: 0.95rem;
+    }
+    .cta-form {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .cta-input {
+      flex: 1;
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .cta-input:focus { border-color: var(--gold); }
+
+    footer {
+      background: var(--fg);
+      color: var(--bg);
+      padding: 4.5rem 0 2.5rem;
+      border-top: 3px solid var(--gold);
+      position: relative;
+      z-index: 2;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: 3rem;
+      margin-bottom: 3.5rem;
+    }
+    .footer-brand h2 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+    .footer-brand p {
+      color: #a8a297;
+      font-size: 0.85rem;
+      max-width: 330px;
+      line-height: 1.65;
+    }
+    .footer-col h3 {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      margin-bottom: 1rem;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 0.5rem; }
+    .footer-col a {
+      color: #c4beaf;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--gold); }
+
+    .mega-kicker {
+      text-align: center;
+      font-family: var(--font-poem);
+      font-size: 5.2rem;
+      line-height: 1.05;
+      padding: 2.5rem 0 1rem;
+      user-select: none;
+      border-top: 1px dotted rgba(255, 255, 255, 0.1);
+    }
+    .kicker-line {
+      display: block;
+      color: var(--gold);
+      opacity: 0;
+      clip-path: inset(0 100% 0 0);
+      transform: translateX(-12px);
+    }
+    .mega-kicker.is-visible .kicker-line {
+      animation: handWriteKicker 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    .mega-kicker.is-visible .kicker-line:nth-child(1) { animation-delay: 0.2s; }
+    .mega-kicker.is-visible .kicker-line:nth-child(2) { animation-delay: 1.0s; }
+    .mega-kicker.is-visible .kicker-line:nth-child(3) { animation-delay: 1.8s; }
+
+    @keyframes handWriteKicker {
+      from {
+        opacity: 0;
+        clip-path: inset(0 100% 0 0);
+        transform: translateX(-12px);
+      }
+      to {
+        opacity: 1;
+        clip-path: inset(0 0 0 0);
+        transform: translateX(0);
+      }
+    }
+    .copyright-bar {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: #787267;
+      margin-top: 1rem;
+    }
+
+    /* 响应式调整 */
+    @media (max-width: 1024px) {
+      .hero { grid-template-columns: 1fr; }
+      .epochs-grid, .class-grid { grid-template-columns: repeat(2, 1fr); }
+      .roster-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .epochs-grid, .class-grid, .roster-grid, .battle-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .hero-title { font-size: 2.4rem; }
+      .poem-script-large { font-size: 2.8rem; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 源石微粒 Canvas -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div>PRTS v4.8.0 Codex Archives · Rhodes Island Operational System</div>
+    <div>
+      STATUS: <span class="topbar-badge">NORMAL</span> · VOL.08 ISSUE #05
+    </div>
+  </div>
+
+  <!-- Header Nav -->
+  <header class="nav-header">
+    <div class="nav-container">
+      <a href="#" class="brand-logo">
+        <div class="brand-mark">Ø</div>
+        <div class="brand-text">
+          <h1>RHODES ISLAND<span class="dot-accent">.</span></h1>
+          <p>Arknights Tactical Archives</p>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#hero" class="nav-item">
+          <div class="nav-top">
+            <span class="nav-num">I.</span>
+            <span class="nav-en">Overture</span>
+          </div>
+          <span class="nav-cn">序曲篇章</span>
+        </a>
+        <a href="#worldview" class="nav-item">
+          <div class="nav-top">
+            <span class="nav-num">II.</span>
+            <span class="nav-en">Worldview</span>
+          </div>
+          <span class="nav-cn">泰拉史诗</span>
+        </a>
+        <a href="#operators" class="nav-item">
+          <div class="nav-top">
+            <span class="nav-num">III.</span>
+            <span class="nav-en">Roster</span>
+          </div>
+          <span class="nav-cn">干员名录</span>
+        </a>
+        <a href="#classes" class="nav-item">
+          <div class="nav-top">
+            <span class="nav-num">IV.</span>
+            <span class="nav-en">Classes</span>
+          </div>
+          <span class="nav-cn">战术分队</span>
+        </a>
+        <a href="#battles" class="nav-item">
+          <div class="nav-top">
+            <span class="nav-num">V.</span>
+            <span class="nav-en">Battles</span>
+          </div>
+          <span class="nav-cn">沉浸战役</span>
+        </a>
+      </nav>
+
+      <a href="#connect" class="nav-action">
+        <span>TERMINAL CONNECT</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="hero">
+      <div class="hero-content">
+        <div class="hero-poem-banner">
+          <span class="poem-text">"In the heart of the storm, we carry the flame of tomorrow..."</span>
+        </div>
+
+        <h1 class="hero-title">
+          明日方舟<span class="dot-accent">.</span>
+          <span class="hero-title-script">Poem of <em class="editorial-em">Terra</em> & <em class="editorial-em">Rhodes Island</em></span>
+        </h1>
+
+        <p class="hero-lead">
+          <span class="illuminated-cap">T</span>erra is an ancient land scarred by catastrophes and originium. 大地被天灾犁过，源石的微光在黑夜中闪烁。我们是<em class="editorial-em">罗德岛</em>，感染者的避难所，亦是行进于荒原之上的希望之舟。在此接入 PRTS 战术终端，细品泰拉世界的血与手写诗章。
+        </p>
+
+        <div class="hero-actions">
+          <a href="#operators" class="btn-primary">
+            <span>浏览干员档案</span>
+            <span>→</span>
+          </a>
+          <a href="#classes" class="btn-secondary">战术职业矩阵</a>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-num">280+</div>
+            <div class="stat-label">REGISTERED OPERATORS</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">VIII</div>
+            <div class="stat-label">TACTICAL CLASSES</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">100%</div>
+            <div class="stat-label">PRTS SYNC RATE</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Visual 3D Card -->
+      <div class="hero-visual">
+        <div class="hero-card" id="heroCard">
+          <div class="hero-card-header">
+            <span>PRTS TACTICAL PREVIEW // ARCHIVE #001</span>
+            <span>AMIYA · LEADERSHIP</span>
+          </div>
+
+          <div class="operator-showcase-box">
+            <span class="operator-overlay-tag">ROSTER LEAD</span>
+            
+            <!-- 阿米娅官方高清透明立绘 -->
+            <img 
+              src="assets/operators/Amiya_hero.png" 
+              alt="阿米娅" 
+              class="operator-showcase-img" 
+              onerror="if(!this.dataset.retry){this.dataset.retry=1;this.src='https://fastly.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_002_amiya_1.png';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}" 
+            />
+            
+            <div class="op-fallback">
+              <div style="font-size:3rem; margin-bottom:0.5rem;">Ø</div>
+              <div>AMIYA · 阿米娅</div>
+            </div>
+
+            <div class="operator-overlay-poem">
+              <div class="poem-script" style="font-size:1.8rem; color:var(--gold-dark);">"May we meet again under a peaceful sky..."</div>
+              <div style="font-size:0.75rem; color:var(--fg-muted); margin-top:2px;" class="cn-script">—— 罗德岛领袖 · 阿米娅 (Amiya) 誓言</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="dotted-rule" />
+
+    <!-- WORLDVIEW & EPOCHS SECTION -->
+    <section id="worldview">
+      <div class="section-header">
+        <div class="section-eyebrow">02 / TERRA CHRONICLES</div>
+        <h2 class="section-title">泰拉世界观与天灾纪元<span class="dot-gold">.</span></h2>
+        <div class="section-subtitle-poem">Epics Written Upon Parchment and Stone</div>
+      </div>
+
+      <div class="epochs-grid">
+        <div class="epoch-card">
+          <div class="epoch-num">I</div>
+          <div class="epoch-title">源石 Originium</div>
+          <div class="epoch-desc">蕴含巨大能量的神秘黑色结晶，推动了泰拉文明的工业飞跃，却也带来了毁灭性的“矿石病”。</div>
+          <div class="epoch-poem">"A double-edged blessing of night."</div>
+        </div>
+
+        <div class="epoch-card">
+          <div class="epoch-num">II</div>
+          <div class="epoch-title">天灾 Catastrophe</div>
+          <div class="epoch-desc">飓风、地震、陨石风暴…频繁发生的自然灾害重塑着地貌，迫使文明栖身于巨型移动城邦之中。</div>
+          <div class="epoch-poem">"The earth shakes, cities wander."</div>
+        </div>
+
+        <div class="epoch-card">
+          <div class="epoch-num">III</div>
+          <div class="epoch-title">感染者 Infected</div>
+          <div class="epoch-desc">身患矿石病的人类，拥有强大的源石技艺能力，却饱受社会的排挤、压迫与公理缺失。</div>
+          <div class="epoch-poem">"Cursed with power, bound by pain."</div>
+        </div>
+
+        <div class="epoch-card">
+          <div class="epoch-num">IV</div>
+          <div class="epoch-title">罗德岛 Rhodes Island</div>
+          <div class="epoch-desc">兼具医疗研发与武装干涉能力的现代避难所，致力于研究矿石病治疗方案与泰拉和平。</div>
+          <div class="epoch-poem">"Ark of hope amidst the storm."</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TERRA MEDITATION MANUSCRIPT QUOTE (图二) -->
+    <section class="manuscript-quote">
+      <div class="bg-layer"></div>
+      <div class="manuscript-quote-content">
+        <div class="manuscript-quote-text">
+          <span class="quote-line">"We walk through the ashes of old empires,</span>
+          <span class="quote-line">writing our prayers upon the wind.</span>
+          <span class="quote-line"><span class="red-em">Neither Originium nor Catastrophe</span></span>
+          <span class="quote-line">shall dim the burning candle of human hope."</span>
+        </div>
+        <div class="manuscript-quote-source">
+          —— 罗德岛古老羊皮纸手稿《泰拉沉思录》第一篇章
+        </div>
+      </div>
+    </section>
+
+    <hr class="dotted-rule" />
+
+    <!-- 03. 干员档案库 (Roster) -->
+    <section id="operators">
+      <div class="section-head">
+        <div class="section-label">
+          <span>03 / OPERATORS ROSTER</span>
+          <span class="dot-accent">•</span>
+        </div>
+        <h2 class="section-title">核心干员典藏名录<span class="dot-gold">.</span></h2>
+      </div>
+
+      <!-- 阵营筛选器 -->
+      <div class="roster-filter">
+        <button class="filter-btn active" onclick="filterRoster('all', this)">全阵营 ALL</button>
+        <button class="filter-btn" onclick="filterRoster('rhodes', this)">罗德岛 RHODES</button>
+        <button class="filter-btn" onclick="filterRoster('lungmen', this)">龙门 LUNGMEN</button>
+        <button class="filter-btn" onclick="filterRoster('karlan', this)">喀兰 KARLAN</button>
+        <button class="filter-btn" onclick="filterRoster('victoria', this)">维多利亚 VICTORIA</button>
+      </div>
+
+      <div class="roster-grid">
+        <!-- 1. 阿米娅 -->
+        <div class="op-card" data-faction="rhodes" style="--op-theme:#003153; --op-theme-glow:rgba(0,49,83,0.45);">
+          <div class="op-card-img-wrapper">
+            <img src="assets/operators/R001_阿米娅_AMIYA.png" alt="阿米娅" class="op-card-img" onerror="this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/characters/char_002_amiya_1.png'" />
+          </div>
+          <div class="op-card-body">
+            <div class="op-card-meta">
+              <span>CLASS: 术师 / 领袖</span>
+              <span>RARE: ★★★★★★</span>
+            </div>
+            <div class="op-card-name">阿米娅 / AMIYA</div>
+            <div class="op-card-title">Leader of Rhodes Island</div>
+            <div class="op-card-oath">"May we meet again under a peaceful sky."</div>
+          </div>
+        </div>
+
+        <!-- 2. 凯尔希 -->
+        <div class="op-card" data-faction="rhodes" style="--op-theme:#5d9b9b; --op-theme-glow:rgba(93,155,155,0.45);">
+          <div class="op-card-img-wrapper">
+            <img src="assets/operators/R002_凯尔希_KALTSIT.png" alt="凯尔希" class="op-card-img" onerror="this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/characters/char_003_kalts_1.png'" />
+          </div>
+          <div class="op-card-body">
+            <div class="op-card-meta">
+              <span>CLASS: 医疗 / 医师</span>
+              <span>RARE: ★★★★★★</span>
+            </div>
+            <div class="op-card-name">凯尔希 / KAL'TSIT</div>
+            <div class="op-card-title">Director of Medical Dept</div>
+            <div class="op-card-oath">"Keep moving forward until the end."</div>
+          </div>
+        </div>
+
+        <!-- 3. 陈 -->
+        <div class="op-card" data-faction="lungmen" style="--op-theme:#b32424; --op-theme-glow:rgba(179,36,36,0.45);">
+          <div class="op-card-img-wrapper">
+            <img src="assets/operators/L001_陈_CHEN.png" alt="陈" class="op-card-img" onerror="this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/characters/char_010_chen_1.png'" />
+          </div>
+          <div class="op-card-body">
+            <div class="op-card-meta">
+              <span>CLASS: 近卫 / 剑圣</span>
+              <span>RARE: ★★★★★★</span>
+            </div>
+            <div class="op-card-name">陈 / CH'EN</div>
+            <div class="op-card-title">Superintendent of L.N.G</div>
+            <div class="op-card-oath">"Chi-Xiao slices through all injustice."</div>
+          </div>
+        </div>
+
+        <!-- 4. 银灰 -->
+        <div class="op-card" data-faction="karlan" style="--op-theme:#7a9bc1; --op-theme-glow:rgba(122,155,193,0.45);">
+          <div class="op-card-img-wrapper">
+            <img src="assets/operators/K001_银灰_SILVERASH.png" alt="银灰" class="op-card-img" onerror="this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/characters/char_172_singrey_1.png'" />
+          </div>
+          <div class="op-card-body">
+            <div class="op-card-meta">
+              <span>CLASS: 近卫 / 领主</span>
+              <span>RARE: ★★★★★★</span>
+            </div>
+            <div class="op-card-name">银灰 / SILVERASH</div>
+            <div class="op-card-title">Warlord of Kjerag</div>
+            <div class="op-card-oath">"My sword is ever sharp for victory."</div>
+          </div>
+        </div>
+
+        <!-- 5. 维什戴尔 (W) -->
+        <div class="op-card" data-faction="victoria" style="--op-theme:#8b1a1a; --op-theme-glow:rgba(139,26,26,0.45);">
+          <div class="op-card-img-wrapper">
+            <img src="assets/operators/Z001_维什戴尔_WISADEL.png" alt="维什戴尔" class="op-card-img" onerror="this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/characters/char_113_cqbr_1.png'" />
+          </div>
+          <div class="op-card-body">
+            <div class="op-card-meta">
+              <span>CLASS: 狙击 / 佣兵</span>
+              <span>RARE: ★★★★★★</span>
+            </div>
+            <div class="op-card-name">维什戴尔 / WIS'ADEL</div>
+            <div class="op-card-title">Sarkaz Mercenary Queen</div>
+            <div class="op-card-oath">"Let the fireworks light up the night!"</div>
+          </div>
+        </div>
+
+        <!-- 6. 缄默德克萨斯 -->
+        <div class="op-card" data-faction="victoria" style="--op-theme:#6a4c93; --op-theme-glow:rgba(106,76,147,0.45);">
+          <div class="op-card-img-wrapper">
+            <img src="assets/operators/R008_缄默德克萨斯_TEXAS.png" alt="缄默德克萨斯" class="op-card-img" onerror="this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/characters/char_1028_texas2_1.png'" />
+          </div>
+          <div class="op-card-body">
+            <div class="op-card-meta">
+              <span>CLASS: 特种 / 处决者</span>
+              <span>RARE: ★★★★★★</span>
+            </div>
+            <div class="op-card-name">缄默德克萨斯 / TEXAS</div>
+            <div class="op-card-title">Sword of Siracusa</div>
+            <div class="op-card-oath">"Twin blades strike where shadows lie."</div>
+          </div>
+        </div>
+
+        <!-- 7. 浊心斯卡蒂 -->
+        <div class="op-card" data-faction="rhodes" style="--op-theme:#3a7ca5; --op-theme-glow:rgba(58,124,165,0.45);">
+          <div class="op-card-img-wrapper">
+            <img src="assets/operators/R009_浊心斯卡蒂_SKADI.png" alt="浊心斯卡蒂" class="op-card-img" onerror="this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/characters/char_1012_skadi2_1.png'" />
+          </div>
+          <div class="op-card-body">
+            <div class="op-card-meta">
+              <span>CLASS: 辅助 / 吟游诗人</span>
+              <span>RARE: ★★★★★★</span>
+            </div>
+            <div class="op-card-name">浊心斯卡蒂 / SKADI</div>
+            <div class="op-card-title">Singer of the Tides</div>
+            <div class="op-card-oath">"Listen to the song of the deep sea."</div>
+          </div>
+        </div>
+
+        <!-- 8. 艾雅法拉 -->
+        <div class="op-card" data-faction="rhodes" style="--op-theme:#c45c26; --op-theme-glow:rgba(196,92,38,0.45);">
+          <div class="op-card-img-wrapper">
+            <img src="assets/operators/R010_艾雅法拉_EYJAFJALLA.png" alt="艾雅法拉" class="op-card-img" onerror="this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/characters/char_180_amgoat_1.png'" />
+          </div>
+          <div class="op-card-body">
+            <div class="op-card-meta">
+              <span>CLASS: 术师 / 天灾学者</span>
+              <span>RARE: ★★★★★★</span>
+            </div>
+            <div class="op-card-name">艾雅法拉 / EYJAFJALLA</div>
+            <div class="op-card-title">Catastrophe Scholar</div>
+            <div class="op-card-oath">"Volcanoes whisper their secret lore."</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="dotted-rule" />
+
+        <!-- 04. 八大战术职业矩阵 (Class Matrix) -->
+    <section class="container" id="classes">
+    <div class="section-header">
+      <span class="section-tag">04 / ARKNIGHTS OFFICIAL CLASSES</span>
+      <h2 class="shoujin-title" style="font-size: 2.8rem;">明日方舟官方八大战术职业矩阵</h2>
+    </div>
+
+    <div class="class-grid">
+      <!-- 1. Vanguard -->
+      <div class="class-card" data-class="vanguard">
+        <div class="class-icon-box">
+          <img src="assets/classes/class_vanguard.png" alt="先锋 Vanguard" class="class-icon-img" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/classes/class_vanguard.png';" />
+        </div>
+        <div class="class-title-en">Vanguard</div>
+        <div class="class-title-cn">先锋战术分队</div>
+        <p class="class-desc">开局核心部署，快速战术占点并高效回收部署费用 (DP)，为后置主力防线奠定坚实基础。</p>
+      </div>
+
+      <!-- 2. Guard -->
+      <div class="class-card" data-class="guard">
+        <div class="class-icon-box">
+          <img src="assets/classes/class_guard.png" alt="近卫 Guard" class="class-icon-img" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/classes/class_guard.png';" />
+        </div>
+        <div class="class-title-en">Guard</div>
+        <div class="class-title-cn">近卫战术分队</div>
+        <p class="class-desc">近战战术主力，具备极强单体突击与群体切割输出能力，是正面防线攻伐与破防的中枢。</p>
+      </div>
+
+      <!-- 3. Defender -->
+      <div class="class-card" data-class="defender">
+        <div class="class-icon-box">
+          <img src="assets/classes/class_defender.png" alt="重装 Defender" class="class-icon-img" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/classes/class_defender.png';" />
+        </div>
+        <div class="class-title-en">Defender</div>
+        <div class="class-title-cn">重装战术分队</div>
+        <p class="class-desc">高防御力战术堡垒，负责阻挡强敌、吸收致命冲击，配合医疗阵线构筑无法撼动的铁壁。</p>
+      </div>
+
+      <!-- 4. Sniper -->
+      <div class="class-card" data-class="sniper">
+        <div class="class-icon-box">
+          <img src="assets/classes/class_sniper.png" alt="狙击 Sniper" class="class-icon-img" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/classes/class_sniper.png';" />
+        </div>
+        <div class="class-title-en">Sniper</div>
+        <div class="class-title-cn">狙击战术分队</div>
+        <p class="class-desc">高台物理制空与精准打击，优先猎杀空中飞行威胁与轻装敌方目标，提供高频火力倾泻。</p>
+      </div>
+
+      <!-- 5. Caster -->
+      <div class="class-card" data-class="caster">
+        <div class="class-icon-box">
+          <img src="assets/classes/class_caster.png" alt="术师 Caster" class="class-icon-img" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/classes/class_caster.png';" />
+        </div>
+        <div class="class-title-en">Caster</div>
+        <div class="class-title-cn">术师战术分队</div>
+        <p class="class-desc">掌控源石法术战术，高额法术伤害穿透敌方重装装甲，对高物理防御单位实施毁灭性打击。</p>
+      </div>
+
+      <!-- 6. Medic -->
+      <div class="class-card" data-class="medic">
+        <div class="class-icon-box">
+          <img src="assets/classes/class_medic.png" alt="医疗 Medic" class="class-icon-img" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/classes/class_medic.png';" />
+        </div>
+        <div class="class-title-en">Medic</div>
+        <div class="class-title-cn">医疗战术分队</div>
+        <p class="class-desc">战场生命保障系统，为前线干员提供持续生命值恢复与状态净化，确保战线长久稳定。</p>
+      </div>
+
+      <!-- 7. Supporter -->
+      <div class="class-card" data-class="supporter">
+        <div class="class-icon-box">
+          <img src="assets/classes/class_supporter.png" alt="辅助 Supporter" class="class-icon-img" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/classes/class_supporter.png';" />
+        </div>
+        <div class="class-title-en">Supporter</div>
+        <div class="class-title-cn">辅助战术分队</div>
+        <p class="class-desc">战场多维控制与战术增益，施加停顿、削弱法抗，并能部署战术召唤物改变战场局势。</p>
+      </div>
+
+      <!-- 8. Specialist -->
+      <div class="class-card" data-class="specialist">
+        <div class="class-icon-box">
+          <img src="assets/classes/class_specialist.png" alt="特种 Specialist" class="class-icon-img" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/Aceship/Arknight-Images/main/classes/class_specialist.png';" />
+        </div>
+        <div class="class-title-en">Specialist</div>
+        <div class="class-title-cn">特种战术分队</div>
+        <p class="class-desc">机动灵活战术介入，擅长勾爪拉扯、地形推拉、快速再部署刺杀与特殊机制应对。</p>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- EPIC BATTLES DARK SLAB SECTION -->
+  <section id="battles" class="dark-slab">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">05 / BATTLE BLACK BOX</div>
+        <h2 class="section-title" style="color:#fff;">沉浸战役黑盒记录<span class="dot-accent">.</span></h2>
+        <div class="section-subtitle-poem" style="color:var(--gold);">Chronicles of Blood, Steel, and Fateful Decisions</div>
+      </div>
+
+      <div class="battle-grid">
+        <div class="battle-card">
+          <div class="battle-card-inner">
+            <div class="battle-card-front">
+              <div class="battle-tag">CAMPAIGN #01 // CHERNOBOG</div>
+              <div class="battle-title">切尔诺伯格突围战</div>
+              <div class="battle-text">
+                在天灾降临与整合运动狂潮的双重威胁下，罗德岛救援小队穿过废墟与烈火，成功营救阿米娅与博士，开启了抗击矿石病与宿命的第一章。
+              </div>
+              <div class="battle-quote">"The dawn begins where shadows fall."</div>
+            </div>
+            <div class="battle-card-back">
+              <img class="battle-card-img" src="assets/battles/battle_1.jpg" alt="切尔诺伯格突围战" loading="lazy">
+            </div>
+          </div>
+        </div>
+
+        <div class="battle-card">
+          <div class="battle-card-inner">
+            <div class="battle-card-front">
+              <div class="battle-tag">CAMPAIGN #02 // LONDINIUM</div>
+              <div class="battle-title">维多利亚·伦蒂尼姆风暴</div>
+              <div class="battle-text">
+                古老王都的迷雾之中，萨卡兹王庭与自理军纠缠交织。罗德岛战术本舰驶入雾都，在铁塔与蒸汽轰鸣中揭开泰拉大地的命运终局。
+              </div>
+              <div class="battle-quote">"Crown of thorns, songs of iron."</div>
+            </div>
+            <div class="battle-card-back">
+              <img class="battle-card-img" src="assets/battles/battle_2.jpg" alt="维多利亚·伦蒂尼姆风暴" loading="lazy">
+            </div>
+          </div>
+        </div>
+
+        <div class="battle-card">
+          <div class="battle-card-inner">
+            <div class="battle-card-front">
+              <div class="battle-tag">CAMPAIGN #03 // KAZDEL</div>
+              <div class="battle-title">卡兹戴尔·百年宿怨</div>
+              <div class="battle-text">
+                漫长流浪的魔王之躯与散落泰拉的萨卡兹同胞。从巴别塔的遗辉到罗德岛的远航，血脉与信念的抉择在此交锋。
+              </div>
+              <div class="battle-quote">"A home for the homeless wanderers."</div>
+            </div>
+            <div class="battle-card-back">
+              <img class="battle-card-img" src="assets/battles/battle_3.jpg" alt="卡兹戴尔·百年宿怨" loading="lazy">
+            </div>
+          </div>
+        </div>
+
+        <div class="battle-card">
+          <div class="battle-card-inner">
+            <div class="battle-card-front">
+              <div class="battle-tag">CAMPAIGN #04 // KAZIMIERZ</div>
+              <div class="battle-title">卡西米尔·骑士特别锦标赛</div>
+              <div class="battle-text">
+                霓虹璀璨的商业联合会与坚持信念的感染者骑士。耀骑士的圣光刺破商业噱头的虚伪，为大地播撒真诚与希望。
+              </div>
+              <div class="battle-quote">"Golden radiance pierces the dark night."</div>
+            </div>
+            <div class="battle-card-back">
+              <img class="battle-card-img" src="assets/battles/battle_4.jpg" alt="卡西米尔·骑士特别锦标赛" loading="lazy">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLLECTIVE OATH (图三) -->
+  <section class="collective-oath">
+    <div class="collective-oath-text">
+      <span class="oath-line">"May our tears become the river that feeds tomorrow's rose.</span>
+      <span class="oath-line">We shall conquer the night,</span>
+      <span class="oath-line">step by step, until the dawn</span>
+      <span class="oath-line">of Terra is born anew."</span>
+    </div>
+    <div class="collective-oath-title">罗德岛全体干员共同誓言</div>
+    <div class="collective-oath-meta">RHODES ISLAND COLLECTIVE OATH // EUR-CODEX</div>
+  </section>
+
+  <!-- CONNECT CTA SECTION -->
+  <section id="connect" class="container">
+    <div class="cta-box">
+      <div class="poem-script-large" style="color:var(--gold-dark); margin-bottom:0.5rem;">"Join us under the banner of Rhodes Island..."</div>
+      <h2 class="cta-title">接入 PRTS 战术通讯网络<span class="dot-accent">.</span></h2>
+      <p class="cta-desc">
+        输入您的博士识别码或电子邮箱，接收罗德岛最新干员招募讯息、天灾预测报告与典藏版欧洲手稿诗集。
+      </p>
+      
+      <form class="cta-form" onsubmit="event.preventDefault(); alert('PRTS 终端已成功记录您的接入请求！');">
+        <input type="text" class="cta-input" placeholder="DOCTOR // EMAIL OR ID..." required />
+        <button type="submit" class="btn-primary" style="border:none; cursor:pointer;">
+          <span>申请接入</span>
+          <span>→</span>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h2>RHODES ISLAND<span class="dot-gold">.</span></h2>
+          <p>
+            罗德岛制药公司，致力于矿石病研究、干员战术协同与泰拉大地和平事业。无论身在何处，罗德岛永远是感染者的避难所。
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h3>TACTICAL ARCHIVES</h3>
+          <ul>
+            <li><a href="#hero">01. 序曲 Overture</a></li>
+            <li><a href="#worldview">02. 泰拉史诗 Worldview</a></li>
+            <li><a href="#operators">03. 干员名录 Roster</a></li>
+            <li><a href="#classes">04. 战术分队 Classes</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>ORGANIZATIONS</h3>
+          <ul>
+            <li><a href="#">罗德岛本舰 (RHODES)</a></li>
+            <li><a href="#">龙门近卫局 (L.N.G)</a></li>
+            <li><a href="#">喀兰贸易 (KARLAN)</a></li>
+            <li><a href="#">企鹅物流 (PENGUIN)</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>SYSTEM & SPECS</h3>
+          <ul>
+            <li><a href="#">PRTS Terminal v4.8.0</a></li>
+            <li><a href="#">Atelier Zero Design System</a></li>
+            <li><a href="#">European Script Font Pack</a></li>
+            <li><a href="#">Hypergryph Official</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mega-kicker">
+        <span class="kicker-line">May We Meet</span>
+        <span class="kicker-line">Again Under A</span>
+        <span class="kicker-line">Peaceful Sky</span>
+      </div>
+
+      <div class="copyright-bar">
+        © 2026 RHODES ISLAND PHARMACEUTICALS · ALL RIGHTS RESERVED. ARKNIGHTS IS REGISTERED TRADEMARK OF HYPERGRYPH.
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script>
+    // 源石微粒 Canvas 动画
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const particles = Array.from({ length: 45 }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 2.5 + 1,
+      speedX: (Math.random() - 0.5) * 0.4,
+      speedY: (Math.random() - 0.5) * 0.4,
+      color: Math.random() > 0.3 ? '#cfa052' : '#d93829',
+      alpha: Math.random() * 0.6 + 0.2
+    }));
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+        if (p.y < 0) p.y = height;
+        if (p.y > height) p.y = 0;
+
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // 3D 卡片倾斜效果 (Hero Card)
+    const heroCard = document.getElementById('heroCard');
+    if (heroCard) {
+      heroCard.addEventListener('mousemove', (e) => {
+        const rect = heroCard.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        const rotateX = (-y / rect.height) * 12;
+        const rotateY = (x / rect.width) * 12;
+        heroCard.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      });
+      heroCard.addEventListener('mouseleave', () => {
+        heroCard.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      });
+    }
+
+    // 干员阵营筛选逻辑
+    function filterRoster(faction, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.op-card');
+      cards.forEach(card => {
+        if (faction === 'all' || card.dataset.faction === faction) {
+          card.style.display = 'block';
+          // 重置 GSAP 可能残留的 transform/opacity，避免隐藏后重新显示时不可见
+          if (typeof gsap !== 'undefined') {
+            gsap.set(card, { clearProps: 'transform,opacity' });
+          }
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // 罗德岛共同誓言：滚动进入视口时触发手写浮现动画
+    const oathSection = document.querySelector('.collective-oath');
+    if (oathSection) {
+      const oathObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            oathObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.35 });
+      oathObserver.observe(oathSection);
+    }
+
+    // Footer 巨型诗句：滚动进入视口时触发手写浮现动画
+    const megaKicker = document.querySelector('.mega-kicker');
+    if (megaKicker) {
+      const kickerObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            kickerObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      kickerObserver.observe(megaKicker);
+    }
+
+    // GSAP 动画系统（参考 landing.html）
+    gsap.registerPlugin(ScrollTrigger);
+
+    window.addEventListener('load', () => {
+      // Hero 进入动画时间线
+      const heroTl = gsap.timeline({
+        onComplete: () => {
+          gsap.set('.hero-poem-banner, .hero-title, .hero-title .editorial-em, .hero-lead, .hero-actions, .hero-stats, .hero-card', { clearProps: 'transform,opacity' });
+        }
+      });
+      heroTl
+        .from('.hero-poem-banner', { opacity: 0, y: 20, duration: 0.6, ease: 'power2.out' })
+        .from('.hero-title', { opacity: 0, y: 35, duration: 0.8, ease: 'power3.out' }, '-=0.4')
+        .from('.hero-title .editorial-em', { opacity: 0, y: 20, duration: 0.6, stagger: 0.12, ease: 'power2.out' }, '-=0.5')
+        .from('.hero-lead', { opacity: 0, y: 20, duration: 0.6, ease: 'power2.out' }, '-=0.4')
+        .from('.hero-actions', { opacity: 0, y: 20, duration: 0.5, ease: 'power2.out' }, '-=0.35')
+        .from('.hero-stats', { opacity: 0, y: 20, duration: 0.5, ease: 'power2.out' }, '-=0.35')
+        .from('.hero-card', { opacity: 0, scale: 0.95, y: 30, duration: 0.9, ease: 'power3.out' }, '-=0.6');
+
+      // 各区块标题滚动触发
+      gsap.utils.toArray('.section-head, .section-header').forEach((sectionHead) => {
+        gsap.from(sectionHead.children, {
+          scrollTrigger: {
+            trigger: sectionHead,
+            start: 'top 90%',
+            toggleActions: 'play none none none'
+          },
+          opacity: 0,
+          y: 30,
+          duration: 0.7,
+          stagger: 0.12,
+          ease: 'power3.out',
+          onComplete: function() { gsap.set(this.targets(), { clearProps: 'transform,opacity' }); }
+        });
+      });
+
+      // 泰拉沉思录引用滚动触发
+      gsap.from('.manuscript-quote', {
+        scrollTrigger: {
+          trigger: '.manuscript-quote',
+          start: 'top 90%'
+        },
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        ease: 'power3.out',
+        onComplete: function() { gsap.set(this.targets(), { clearProps: 'transform,opacity' }); }
+      });
+
+      // 纪元卡片 stagger
+      gsap.from('.epoch-card', {
+        scrollTrigger: {
+          trigger: '#worldview',
+          start: 'top 90%'
+        },
+        opacity: 0,
+        y: 50,
+        stagger: 0.1,
+        duration: 0.75,
+        ease: 'power3.out',
+        onComplete: function() { gsap.set(this.targets(), { clearProps: 'transform,opacity' }); }
+      });
+
+      // 干员卡片 stagger
+      gsap.from('.op-card', {
+        scrollTrigger: {
+          trigger: '#operators',
+          start: 'top 90%'
+        },
+        opacity: 0,
+        y: 50,
+        stagger: 0.08,
+        duration: 0.75,
+        ease: 'power3.out',
+        onComplete: function() { gsap.set(this.targets(), { clearProps: 'transform,opacity' }); }
+      });
+
+      // 职业卡片 stagger
+      gsap.from('.class-card', {
+        scrollTrigger: {
+          trigger: '#classes',
+          start: 'top 90%'
+        },
+        opacity: 0,
+        y: 40,
+        stagger: 0.06,
+        duration: 0.65,
+        ease: 'power3.out',
+        onComplete: function() { gsap.set(this.targets(), { clearProps: 'transform,opacity' }); }
+      });
+
+      // 战役卡片 stagger
+      gsap.from('.battle-card', {
+        scrollTrigger: {
+          trigger: '#battles',
+          start: 'top 90%'
+        },
+        opacity: 0,
+        y: 60,
+        stagger: 0.15,
+        duration: 0.9,
+        ease: 'power3.out',
+        onComplete: function() { gsap.set(this.targets(), { clearProps: 'transform,opacity' }); }
+      });
+    });
+  </script>
+</body>
+</html>
